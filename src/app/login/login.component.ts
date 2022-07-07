@@ -67,24 +67,20 @@ export class LoginComponent implements OnInit {
   attemptLogin() {
     if (this.loginType$ === "BASIC") {
       this.psservice.sendMessage(true);
-
       this.authservice.login(this.loginData.userName, this.loginData.password).subscribe(
         response => {
           if (response.status == 200) {
             let operatorParams = new HttpParams()
-
             this.dpservice.getDataPage("D_OperatorID", operatorParams).subscribe(
               response => {
                 let operator: any = response.body;
                 sessionStorage.setItem("userName", operator.pyUserName);
                 sessionStorage.setItem("userWorkBaskets", JSON.stringify(operator.pyWorkBasketList));
-
                 this.psservice.sendMessage(false);
                 this.glsservice.sendMessage("LoggedIn");
               },
               err => {
                 this.psservice.sendMessage(false);
-
                 let sError = "Errors getting data page: " + err.message;
                 let snackBarRef = this.snackBar.open(sError, "Ok");
               }
@@ -92,13 +88,13 @@ export class LoginComponent implements OnInit {
           }
         },
         err => {
+          this.psservice.sendMessage(false);
           let snackBarRef = this.snackBar.open(err.message, "Ok");
           this.glsservice.sendMessage("LoggedOut");
           sessionStorage.clear();
         }
       );
-    }
-    else if (this.loginType$ === "OAUTH") {
+    } else if (this.loginType$ === "OAUTH") {
       this.clientID$ = endpoints.client_id;
       this.authservice.loginOauth(this.clientID$);
     }
