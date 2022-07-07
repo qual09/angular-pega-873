@@ -27,41 +27,33 @@ export class WorklistComponent implements OnInit {
   message: any;
   subscription: Subscription;
 
-  displayedColumns = ['pxRefObjectInsName','pyAssignmentStatus', 'pyLabel', 'pxUrgencyAssign'];
+  displayedColumns = ['pxRefObjectInsName', 'pyAssignmentStatus', 'pyLabel', 'pxUrgencyAssign'];
   worklistResults = [];
 
-
-  constructor(private datapage: DatapageService, 
-              private oaservice: OpenAssignmentService,
-              private rwlservice: RefreshWorkListService,
-              private psservice: ProgressSpinnerService,
-              private glsservice: GetLoginStatusService,
-              ) { }
+  constructor(private datapage: DatapageService,
+    private oaservice: OpenAssignmentService,
+    private rwlservice: RefreshWorkListService,
+    private psservice: ProgressSpinnerService,
+    private glsservice: GetLoginStatusService,
+  ) { }
 
   ngOnInit() {
-
     this.getWorkList();
-    
+
     // will get operatorID datapage in case of OAuth, for basic auth it is done in the login method itself
-    if(endpoints.use_OAuth){
+    if (endpoints.use_OAuth) {
       this.loadFromOAuth();
     }
 
-    this.subscription = this.rwlservice.getMessage().subscribe(message => { 
+    this.subscription = this.rwlservice.getMessage().subscribe(message => {
       this.message = message;
-
 
       if (this.message.workList === 'Work' || this.message.workList === "Worklist") {
         this.getWorkList();
-
-      }
-      else {
+      } else {
         this.getWorkBaskets(this.message.workList);
       }
     });
-
-    
-
   }
 
   ngOnDestroy() {
@@ -79,7 +71,6 @@ export class WorklistComponent implements OnInit {
         let operator: any = response.body;
         sessionStorage.setItem("userName", operator.pyUserName);
         sessionStorage.setItem("userWorkBaskets", JSON.stringify(operator.pyWorkBasketList));
-      
 
         this.psservice.sendMessage(false);
         this.glsservice.sendMessage("LoggedIn");
@@ -92,38 +83,31 @@ export class WorklistComponent implements OnInit {
 
   getWorkList() {
     let worklistParams = new HttpParams().set('Work', 'true');
-
     this.psservice.sendMessage(true);
 
     let dsubscription = this.datapage.getDataPage("D_Worklist", worklistParams).subscribe(
-
       response => {
         this.worklist$ = new MatTableDataSource<any>(this.getResults(response.body));
         this.headers = response.headers;
 
         this.worklist$.paginator = this.paginator;
         this.worklist$.sort = this.sort;
-        
+
         this.psservice.sendMessage(false);
 
         dsubscription.unsubscribe();
-        
       },
       err => {
         this.psservice.sendMessage(false);
         console.log("Error form worklist:" + err.errors);
       }
     );
-
-    
-
   }
 
   getWorkBaskets(workbasket) {
     let workbasketParams = new HttpParams().set('WorkBasket', workbasket);
 
     let dsubscription = this.datapage.getDataPage("D_WorkBasket", workbasketParams).subscribe(
-
       response => {
         this.worklist$ = new MatTableDataSource<any>(this.getResults(response.body));
         this.headers = response.headers;
@@ -151,6 +135,5 @@ export class WorklistComponent implements OnInit {
   openAssignment(row) {
     this.psservice.sendMessage(true);
     this.oaservice.sendMessage(row.pxRefObjectInsName, row);
-
   }
 }
