@@ -5,11 +5,11 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <button mat-icon-button (click)="drawer.toggle()" *ngIf="bLoggedIn == true">
-      <mat-icon >menu</mat-icon>
+      <mat-icon>menu</mat-icon>
     </button>
     <mat-icon style="padding: 0px 10px 0px 20px;">home</mat-icon>PegaApp
     <span class="toolbar-spacer"> </span>
-    <button mat-icon-button [matTooltip]="'Settings'" (click)="showSettings()">    
+    <button mat-icon-button [matTooltip]="'Settings'" (click)="showSettings()">
       <mat-icon>settings</mat-icon>
     </button>
     <button mat-button>{{version}}</button>
@@ -23,24 +23,25 @@
 </mat-toolbar>
 <mat-drawer-container class="example-container" hasBackdrop="false">
   <mat-drawer #drawer side>
-      <!-- dummy button, so first button isn't highlighted, this will be hidden-->
-      <button style="position:absolute; height: 0px;" mat-button></button>
-      <!-- end dummy-->
-          <app-createcaselist (click)="drawer.close()" ></app-createcaselist>
-          <mat-list>
-            <mat-divider></mat-divider>
-            <mat-list-item>
-              <button mat-menu-item (click)="drawer.close();getNextWork()">Get Next Work</button>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item><mat-icon>history</mat-icon> Recents</mat-list-item>
-            <app-recentlist (click)="drawer.close()"></app-recentlist>
-            <mat-divider></mat-divider>
-          </mat-list>
+    <!-- dummy button, so first button isn't highlighted, this will be hidden-->
+    <button style="position:absolute; height: 0px;" mat-button></button>
+    <!-- end dummy-->
+    <app-createcaselist (click)="drawer.close()"></app-createcaselist>
+    <mat-list>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-menu-item (click)="drawer.close();getNextWork()">Get Next Work</button>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <mat-icon>history</mat-icon> Recents
+      </mat-list-item>
+      <app-recentlist (click)="drawer.close()"></app-recentlist>
+      <mat-divider></mat-divider>
+    </mat-list>
   </mat-drawer>
   <mat-drawer-content>
     <app-maintabs *ngIf="bLoggedIn == true"></app-maintabs>
   </mat-drawer-content>
 </mat-drawer-container>
 <app-login *ngIf="bLoggedIn == false"></app-login>
-

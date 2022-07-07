@@ -6,7 +6,7 @@ import { AssignmentService } from "../_services/assignment.service";
 import { OpenAssignmentService } from "../_messages/openassignment.service";
 import { ProgressSpinnerService } from "../_messages/progressspinner.service";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef  } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { endpoints } from '../_services/endpoints';
 import { appConstants } from '../_constants/AppConstants';
 import { AuthService } from '../_services/auth.service';
@@ -18,7 +18,6 @@ import { RightPanelService } from '../_messages/right-panel.service';
   styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent implements OnInit {
-
   bLoggedIn: boolean = !!sessionStorage.getItem("pega_ng_user");
   userName$: string = "";
   subscription: Subscription;
@@ -27,8 +26,7 @@ export class NavigationComponent implements OnInit {
   progressSpinnerMessage: any;
   progressSpinnerSubscription: Subscription;
 
-
-  bUseNewRow : boolean;
+  bUseNewRow: boolean;
   bUseRepeatPageInstructions: boolean;
   bUsePagePageInstructions: boolean;
   bUseLocalOptionsForDataPage: boolean;
@@ -49,34 +47,29 @@ export class NavigationComponent implements OnInit {
     private psservice: ProgressSpinnerService,
     private authservice: AuthService,
     private rightPanelService: RightPanelService
-  ) {}
+  ) { }
 
   ngOnInit() {
-
     if (sessionStorage.getItem("pega_ng_user")) {
       // if have a user, then have already logged in
       this.bLoggedIn = true;
       this.userName$ = sessionStorage.getItem("userName");
     }
 
-
     this.subscription = this.glsservice.getMessage().subscribe(
       message => {
         if (message.loginStatus === 'LoggedIn') {
           this.bLoggedIn = true;
           this.userName$ = sessionStorage.getItem("userName");
-        }
-        else {
+        } else {
           this.bLoggedIn = false;
         }
-
         this.cdRef.detectChanges();
       }
-
-  );
+    );
 
     // handle showing and hiding the progress spinner
-    this.progressSpinnerSubscription = this.psservice.getMessage().subscribe(message => { 
+    this.progressSpinnerSubscription = this.psservice.getMessage().subscribe(message => {
       this.progressSpinnerMessage = message;
 
       this.showHideProgress(this.progressSpinnerMessage.show);
@@ -84,7 +77,6 @@ export class NavigationComponent implements OnInit {
 
     // make all 8.3 by default
     this.setLocalDefaults();
-
   }
 
   ngOnDestroy() {
@@ -92,7 +84,7 @@ export class NavigationComponent implements OnInit {
     this.progressSpinnerSubscription.unsubscribe();
   }
 
-  getSettingsFromLocalStorage(){
+  getSettingsFromLocalStorage() {
     this.bUseNewRow = localStorage.getItem("useNewRow") !== "false";
     this.bUseRepeatPageInstructions = localStorage.getItem("useRepeatPageInstructions") !== "false";
     this.bUsePagePageInstructions = localStorage.getItem("usePagePageInstructions") !== "false";
@@ -105,7 +97,6 @@ export class NavigationComponent implements OnInit {
   }
 
   setLocalDefaults() {
-
     this.getSettingsFromLocalStorage();
 
     localStorage.setItem("useNewRow", this.bUseNewRow.toString());
@@ -120,15 +111,13 @@ export class NavigationComponent implements OnInit {
   }
 
   getNextWork() {
-
     this.psservice.sendMessage(true);
 
     this.aservice.getAssignment("next").subscribe(
       assignmentResponse => {
-        let nextWork : any = assignmentResponse.body;
+        let nextWork: any = assignmentResponse.body;
 
         if (nextWork.ID && nextWork.ID != "") {
-
           let nextAssignment = {};
 
           let arCase = nextWork.caseID.split(" ");
@@ -142,13 +131,9 @@ export class NavigationComponent implements OnInit {
           nextAssignment["pzInsKey"] = nextWork.ID;
 
           this.oaservice.sendMessage(currentCaseName, nextAssignment);
-          
-        } 
-        else {
+        } else {
           let snackBarRef = this.snackBar.open("No next actions to go to", "Ok");
         }
-
-
       },
       assignmentError => {
         let snackBarRef = this.snackBar.open("Errors from get assignment:" + assignmentError.errors, "Ok");
@@ -162,7 +147,6 @@ export class NavigationComponent implements OnInit {
   }
 
   showSettings() {
-
     this.getSettingsFromLocalStorage();
 
     const dialogRef = this.settingsDialog.open(SettingsdialogComponent, {
@@ -198,23 +182,18 @@ export class NavigationComponent implements OnInit {
   }
 
   logOff() {
-    if(endpoints.use_OAuth){
+    if (endpoints.use_OAuth) {
       this.authservice.authLogout();
-    }else{
+    } else {
       sessionStorage.clear();
     }
     this.glsservice.sendMessage("LoggedOff");
-
   }
 
 }
 
-
-
-
-
 export interface SettingsData {
-  bUseNewRow : boolean;
+  bUseNewRow: boolean;
   bUseRepeatPageInstructions: boolean;
   bUsePagePageInstructions: boolean;
   bUseLocalOptionsForDataPage: boolean;
@@ -231,9 +210,6 @@ export interface SettingsData {
   styleUrls: ['./settingsdialog.component.scss']
 })
 export class SettingsdialogComponent implements OnInit {
-
-
-
   constructor(
     public dialogRef: MatDialogRef<SettingsdialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SettingsData) { }
@@ -241,8 +217,9 @@ export class SettingsdialogComponent implements OnInit {
   ngOnInit() {
   }
 
-  closeDialog() { 
-    this.dialogRef.close({ bUseNewRow: this.data.bUseNewRow, 
+  closeDialog() {
+    this.dialogRef.close({
+      bUseNewRow: this.data.bUseNewRow,
       bUseRepeatPageInstructions: this.data.bUseRepeatPageInstructions,
       bUsePagePageInstructions: this.data.bUsePagePageInstructions,
       bUseLocalOptionsForDataPage: this.data.bUseLocalOptionsForDataPage,

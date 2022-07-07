@@ -19,7 +19,6 @@ import { ChangeDetectorRef } from "@angular/core";
   styleUrls: ['./maintabs.component.scss']
 })
 
-
 // 
 // app-maintabs component creates a new tab for most of the "open" messages
 // Typically a new tab is created, when the componet gets the message that the tab
@@ -28,9 +27,7 @@ import { ChangeDetectorRef } from "@angular/core";
 // the "get" message and populate itself appropriately
 //
 
-
 export class MaintabsComponent implements OnInit {
-
   message: any;
   subscription: Subscription;
 
@@ -48,34 +45,32 @@ export class MaintabsComponent implements OnInit {
   openRecentMessage: any;
   openRecentSubscription: Subscription;
 
-  constructor(private oaService: OpenAssignmentService, 
-              private gaService: GetAssignmentService,
-              private cwService: CloseWorkService,
-              private oncService: OpenNewCaseService,
-              private gncService: GetNewCaseService,
-              private rtService: RenameTabService,
-              private orService: OpenRecentService,
-              private grService: GetRecentService,
-              private psService: ProgressSpinnerService,
-              private cdRef: ChangeDetectorRef ) { 
+  constructor(
+    private oaService: OpenAssignmentService,
+    private gaService: GetAssignmentService,
+    private cwService: CloseWorkService,
+    private oncService: OpenNewCaseService,
+    private gncService: GetNewCaseService,
+    private rtService: RenameTabService,
+    private orService: OpenRecentService,
+    private grService: GetRecentService,
+    private psService: ProgressSpinnerService,
+    private cdRef: ChangeDetectorRef
+  ) {
 
-    this.subscription = this.oaService.getMessage().subscribe(message => { 
-
+    this.subscription = this.oaService.getMessage().subscribe(message => {
       this.message = message;
       this.addTab(message.caseID, message.assignment);
     });
 
-    this.closeWorkSubscription = this.cwService.getMessage().subscribe(message => { 
-
+    this.closeWorkSubscription = this.cwService.getMessage().subscribe(message => {
       this.closeWorkMessage = message;
       this.removeTab(this.closeWorkMessage.workID);
-
     });
 
     this.openNewCaseSubscrption = this.oncService.getMessage().subscribe(
       message => {
         this.openNewCaseMessage = message;
-
         this.isNewCase = true;
         this.addTab("New", null);
       }
@@ -84,7 +79,6 @@ export class MaintabsComponent implements OnInit {
     this.renameTabSubscription = this.rtService.getMessage().subscribe(
       message => {
         this.renameTabMessage = message;
-
         this.renameTab(this.renameTabMessage.tabName, this.renameTabMessage.newTabName);
       }
     );
@@ -92,17 +86,14 @@ export class MaintabsComponent implements OnInit {
     this.openRecentSubscription = this.orService.getMessage().subscribe(
       message => {
         this.openRecentMessage = message;
-
         this.addTab(message.caseName, null);
       }
     );
-
 
   }
 
   tabs = ['Dashboard'];
   selected = new FormControl(0, null);
-
 
   ngOnInit() {
   }
@@ -115,65 +106,50 @@ export class MaintabsComponent implements OnInit {
     // called after the tab has been created
     // then we want to send the appropriate message (usally to app-workitem) to populate
 
-
     if (this.message) {
-
       if (!this.isNewCase) {
         this.gaService.sendMessage(this.message.assignment.pxRefObjectInsName, this.message.assignment);
-        
         this.message = null;
       }
-    }
-    else if (this.openNewCaseMessage) {
+    } else if (this.openNewCaseMessage) {
       if (this.isNewCase) {
         this.isNewCase = false;
-
         this.gncService.sendMessage(this.openNewCaseMessage.caseID);
       }
-    }
-    else if (this.openRecentMessage) {
+    } else if (this.openRecentMessage) {
       if (!this.isNewCase) {
         this.grService.sendMessage(this.openRecentMessage.caseID);
       }
     }
   }
 
-  addTab( sTabName : string, assignment : Object) {
-    if (this.tabs.indexOf(sTabName) == -1 ) {
+  addTab(sTabName: string, assignment: Object) {
+    if (this.tabs.indexOf(sTabName) == -1) {
       this.tabs.push(sTabName);
 
       // have to select the tab after it is created
       let timer = interval(100).subscribe(() => {
-        this.selected.setValue(this.tabs.length-1);timer.unsubscribe();
-        });
-    
-    }
-    else {
+        this.selected.setValue(this.tabs.length - 1); timer.unsubscribe();
+      });
+    } else {
       this.psService.sendMessage(false);
       this.selected.setValue(this.tabs.indexOf(sTabName));
     }
-
-
   }
 
-
   removeTab(tabName: string) {
-
     let tabIndex = this.tabs.indexOf(tabName);
     this.removeTab_local(tabIndex);
-
   }
 
   removeTab_local(index: number) {
     this.tabs.splice(index, 1);
     let timer = interval(100).subscribe(() => {
-        this.cdRef.detectChanges();timer.unsubscribe();
-      })
+      this.cdRef.detectChanges(); timer.unsubscribe();
+    });
   }
-  
 
   renameTab(tabName: string, newTabName: string) {
-
     let tabIndex = this.tabs.indexOf(tabName);
     if (tabIndex >= 0) {
       this.tabs[tabIndex] = newTabName;

@@ -34,7 +34,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialogClose } from '@angular/material/dialog';
 
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutModule } from '@angular/cdk/layout';
@@ -75,12 +74,9 @@ import { SafeHtmlPipe } from './_pipe/safehtml.pipe';
 import { RecentlistComponent } from './_subcomponents/recentlist/recentlist.component';
 import { NumberComponent } from './_fieldcomponents/number/number.component';
 import { NosupportComponent } from './_fieldcomponents/nosupport/nosupport.component';
-import { ReferenceHelper } from  './_helpers/reference-helper';
+import { ReferenceHelper } from './_helpers/reference-helper';
 import { InterceptorService } from './_services/interceptor.service';
 import { AuthPageComponent } from './auth-page/auth-page.component';
-
-
-
 
 @NgModule({
   declarations: [
@@ -127,7 +123,6 @@ import { AuthPageComponent } from './auth-page/auth-page.component';
     InfoDialogComponent,
     AuthPageComponent
   ],
-
   imports: [
     BrowserModule,
     ReactiveFormsModule,

@@ -12,8 +12,6 @@ const routes: Routes = [
     path: 'data',
     component: WorklistComponent,
   }
-
-
 ];
 
 @NgModule({

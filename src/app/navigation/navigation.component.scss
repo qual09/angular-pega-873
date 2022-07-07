@@ -20,3 +20,12 @@
 .progress-spinner {
     text-align: center;
 }
+
+.mat-toolbar-multiple-rows {
+    min-height: 47px;
+}
+
+.mat-toolbar-row,
+.mat-toolbar-single-row {
+    height: 47px;
+}

@@ -11,7 +11,7 @@ export class AppComponent {
 
   loggedIn: boolean = false;
 
-  constructor(private authservice: AuthService){
+  constructor(private authservice: AuthService) {
     authservice.initEndpoints();
   }
 
