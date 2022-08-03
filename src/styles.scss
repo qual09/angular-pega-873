@@ -18,3 +18,12 @@ body {
 .mat-tab-label-active {
     opacity: 1 !important;
 }
+
+.mat-menu-panel {
+    min-height: auto !important;
+}
+
+.mat-menu-item {
+    line-height: 32px !important;
+    height: auto !important;
+}
